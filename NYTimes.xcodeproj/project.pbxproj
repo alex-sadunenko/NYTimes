@@ -19,6 +19,9 @@
 		631DD082250FCA4A00AE34C7 /* ArticlesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631DD081250FCA4A00AE34C7 /* ArticlesViewController.swift */; };
 		631DD084251002D100AE34C7 /* AlamofireRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631DD083251002D100AE34C7 /* AlamofireRequestManager.swift */; };
 		631DD086251096C000AE34C7 /* MainTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631DD085251096C000AE34C7 /* MainTableViewCell.swift */; };
+		631DD0882510B50400AE34C7 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631DD0872510B50400AE34C7 /* DetailViewController.swift */; };
+		631DD08A2510C40900AE34C7 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 631DD0892510C40800AE34C7 /* WebKit.framework */; };
+		631DD08C2510E9E000AE34C7 /* FavoritesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631DD08B2510E9E000AE34C7 /* FavoritesModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +39,9 @@
 		631DD081250FCA4A00AE34C7 /* ArticlesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesViewController.swift; sourceTree = "<group>"; };
 		631DD083251002D100AE34C7 /* AlamofireRequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlamofireRequestManager.swift; sourceTree = "<group>"; };
 		631DD085251096C000AE34C7 /* MainTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTableViewCell.swift; sourceTree = "<group>"; };
+		631DD0872510B50400AE34C7 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		631DD0892510C40800AE34C7 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		631DD08B2510E9E000AE34C7 /* FavoritesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesModel.swift; sourceTree = "<group>"; };
 		6F749B7DC6215BF3E267F882 /* Pods-NYTimes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NYTimes.release.xcconfig"; path = "Target Support Files/Pods-NYTimes/Pods-NYTimes.release.xcconfig"; sourceTree = "<group>"; };
 		D8F997D8181FF5B6E639338F /* Pods-NYTimes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NYTimes.debug.xcconfig"; path = "Target Support Files/Pods-NYTimes/Pods-NYTimes.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -45,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				631DD08A2510C40900AE34C7 /* WebKit.framework in Frameworks */,
 				2CDE142733526CAFA8E7D41E /* libPods-NYTimes.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -55,6 +62,7 @@
 		0A314A0325A70C9EDD39FE6F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				631DD0892510C40800AE34C7 /* WebKit.framework */,
 				22307531900D7A865AC1D5EC /* libPods-NYTimes.a */,
 			);
 			name = Frameworks;
@@ -101,6 +109,7 @@
 				631DD085251096C000AE34C7 /* MainTableViewCell.swift */,
 				631DD081250FCA4A00AE34C7 /* ArticlesViewController.swift */,
 				631DD07F250FC22C00AE34C7 /* ArticlesTableViewCell.swift */,
+				631DD0872510B50400AE34C7 /* DetailViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -109,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				631DD072250FB4A300AE34C7 /* ModelNews.swift */,
+				631DD08B2510E9E000AE34C7 /* FavoritesModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -219,8 +229,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				631DD0882510B50400AE34C7 /* DetailViewController.swift in Sources */,
 				631DD080250FC22C00AE34C7 /* ArticlesTableViewCell.swift in Sources */,
 				631DD073250FB4A300AE34C7 /* ModelNews.swift in Sources */,
+				631DD08C2510E9E000AE34C7 /* FavoritesModel.swift in Sources */,
 				631DD086251096C000AE34C7 /* MainTableViewCell.swift in Sources */,
 				631DD05C250FA4EA00AE34C7 /* AppDelegate.swift in Sources */,
 				631DD084251002D100AE34C7 /* AlamofireRequestManager.swift in Sources */,

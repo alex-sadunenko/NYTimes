@@ -10,6 +10,7 @@ import Foundation
 import Alamofire
 
 class AlamofireRequest {
+    
     func sendRequest(url: String, completion: @escaping (_ modelNews: ModelNews) -> ()) {
         guard let url = URL(string: url) else { return }
         AF.request(url).responseJSON { (response) in
@@ -25,6 +26,22 @@ class AlamofireRequest {
                 } catch let error as NSError {
                     print("Error: \(error.localizedDescription)")
                 }
+                
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func sendRequestImage(url: String, completion: @escaping (_ articleImage: UIImage?) -> ()) {
+        guard let url = URL(string: url) else { return }
+        AF.request(url).response { (response) in
+            switch response.result {
+            case .success:
+                guard let data = response.data else { return }
+                
+                let result = UIImage(data: data)
+                completion(result)
                 
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")

@@ -24,7 +24,9 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationController?.isToolbarHidden = true
+        //navigationController?.isToolbarHidden = true
+        //navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -33,6 +35,7 @@ class MainViewController: UIViewController {
         guard let numberSection = tableView.indexPathForSelectedRow?.row else { return }
 
         articlesVC.endpointArticle = urlOfSections[numberSection]
+        articlesVC.titleSection = listOfSections[numberSection]
     }
 
 }

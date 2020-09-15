@@ -9,14 +9,14 @@
 import Foundation
 
 struct ModelNews: Decodable {
-    let results: [Results]?
+    let results: [ResultsNews]?
     
     enum CodingKeys: String, CodingKey {
         case results = "results"
     }
 }
 
-struct Results: Decodable {
+struct ResultsNews: Decodable {
     let url: String?
     let title: String?
     let publishedDate: String?
