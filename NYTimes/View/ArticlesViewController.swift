@@ -33,16 +33,24 @@ class ArticlesViewController: UIViewController {
         
         navigationItem.title = titleSection
         dataFetch()
-
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetailArticle" {
             let detailVC = segue.destination as! DetailViewController
             guard let numberSection = tableView.indexPathForSelectedRow?.row else { return }
-            guard let newsArray = newsArray, let results = newsArray.results else { return }
-            detailVC.articleURL = results[numberSection].url
+            if endpointArticle == nil {
+                detailVC.articleURLOffline = items[numberSection].url
+            } else {
+                guard let newsArray = newsArray, let results = newsArray.results else { return }
+                detailVC.articleURL = results[numberSection].url
+            }
         }
+    }
+    
+    func update() {
+        tableView.reloadData()
     }
     
 }
@@ -61,6 +69,12 @@ extension ArticlesViewController {
         } else {
             items = realm.objects(FavoritesModel.self)
         }
+    }
+}
+
+//MARK: - Table View Delegate
+extension ArticlesViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     }
 }
 
@@ -85,8 +99,9 @@ extension ArticlesViewController: UITableViewDataSource {
             let favorites = realm.objects(FavoritesModel.self).filter(predicate)
             print(favorites)
             guard let favorite = favorites.first else { return cell}
+            let image = UIImage(data: favorite.image)
 
-            cell.setupWith(titleLabel: favorite.title, authorLabel: favorite.byline, dateLabel: favorite.publishedDate, articleImage: nil, articleURL: favorite.url, isFavorite: favorite.isFavorite)
+            cell.setupWith(titleLabel: favorite.title, authorLabel: favorite.byline, dateLabel: favorite.publishedDate, articleImage: nil, articleURL: favorite.url, isFavorite: favorite.isFavorite, image: image)
             
         } else {
             guard let newsArray = newsArray, let results = newsArray.results else { return cell}
@@ -99,7 +114,7 @@ extension ArticlesViewController: UITableViewDataSource {
                 isFavorite = favorite.isFavorite
             }
             
-            cell.setupWith(titleLabel: result.title, authorLabel: result.byline, dateLabel: result.publishedDate, articleImage: nil, articleURL: result.url, isFavorite: isFavorite)
+            cell.setupWith(titleLabel: result.title, authorLabel: result.byline, dateLabel: result.publishedDate, articleImage: nil, articleURL: result.url, isFavorite: isFavorite, image: UIImage())
             
             guard let media = results[indexPath.row].media.first else { return cell }
             guard let mediaMetadata = media.mediaMetadata.last else { return cell }

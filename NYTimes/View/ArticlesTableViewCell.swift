@@ -19,24 +19,43 @@ class ArticlesTableViewCell: UITableViewCell {
     
     var articleURL = ""
     let realm = try! Realm()
-    
+    let alamofireRequest = AlamofireRequest()
+        
     override func awakeFromNib() {
         super.awakeFromNib()
     }
 
     @IBAction func favoritesTapped(_ sender: UIButton) {
-        print("Press favorite")
-        let newObjectFavorites = FavoritesModel()
-        newObjectFavorites.title = titleLabel.text!
-        newObjectFavorites.byline = authorLabel.text!
-        newObjectFavorites.publishedDate = dateLabel.text!
-        newObjectFavorites.url = articleURL
-        newObjectFavorites.isFavorite = "star.fill"
         
-        try! realm.write {
-            realm.add(newObjectFavorites)
-            favoritesButton.imageView?.image = UIImage(systemName: "star.fill")
+        let predicate = NSPredicate(format: "title == %@", argumentArray: [titleLabel.text as Any])
+        let favorites = realm.objects(FavoritesModel.self).filter(predicate)
+        if let favorite = favorites.first {
+            
+            try! self.realm.write {
+                self.realm.delete(favorite)
+            }
+            
+        } else {
+            
+            let newObjectFavorites = FavoritesModel()
+            newObjectFavorites.title = titleLabel.text!
+            newObjectFavorites.byline = authorLabel.text!
+            newObjectFavorites.publishedDate = dateLabel.text!
+            newObjectFavorites.isFavorite = "star.fill"
+            if let data = articleImage.image?.pngData() {
+                newObjectFavorites.image = data
+            }
+            alamofireRequest.sendRequestHTML(url: articleURL) { (stringHTML) in
+                guard let stringHTML = stringHTML else { return }
+                newObjectFavorites.url = stringHTML
+                
+                try! self.realm.write {
+                    self.realm.add(newObjectFavorites)
+                    sender.imageView?.image = UIImage(systemName: "star.fill")
+                }
+            }
         }
+        
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -49,13 +68,15 @@ class ArticlesTableViewCell: UITableViewCell {
                    dateLabel: String?,
                    articleImage: UIImage?,
                    articleURL: String?,
-                   isFavorite: String) {
+                   isFavorite: String,
+                   image: UIImage?) {
         self.titleLabel.text = titleLabel
         self.authorLabel.text = authorLabel
         self.dateLabel.text = dateLabel
         self.articleImage.image = articleImage
         self.articleURL = articleURL!
         self.favoritesButton.imageView?.image = UIImage(systemName: isFavorite)
+        self.articleImage.image = image
     }
 
 }

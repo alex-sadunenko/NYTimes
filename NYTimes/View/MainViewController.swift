@@ -23,10 +23,6 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        //navigationController?.isToolbarHidden = true
-        //navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

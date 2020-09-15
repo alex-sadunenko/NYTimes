@@ -48,5 +48,22 @@ class AlamofireRequest {
             }
         }
     }
+    
+    func sendRequestHTML(url: String, completion: @escaping (_ stringHTML: String?) -> ()) {
+        guard let url = URL(string: url) else { return }
+        AF.request(url).response { (response) in
+            switch response.result {
+            case .success:
+                guard let data = response.data else { return }
+                
+                let result = String(data: data, encoding: .utf8)
+                completion(result)
+                
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
 }
 
