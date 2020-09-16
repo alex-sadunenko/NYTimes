@@ -22,6 +22,7 @@
 		631DD0882510B50400AE34C7 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631DD0872510B50400AE34C7 /* DetailViewController.swift */; };
 		631DD08A2510C40900AE34C7 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 631DD0892510C40800AE34C7 /* WebKit.framework */; };
 		631DD08C2510E9E000AE34C7 /* FavoritesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631DD08B2510E9E000AE34C7 /* FavoritesModel.swift */; };
+		631DD08E2511E6BE00AE34C7 /* Spinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631DD08D2511E6BE00AE34C7 /* Spinner.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		631DD0872510B50400AE34C7 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		631DD0892510C40800AE34C7 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		631DD08B2510E9E000AE34C7 /* FavoritesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesModel.swift; sourceTree = "<group>"; };
+		631DD08D2511E6BE00AE34C7 /* Spinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spinner.swift; sourceTree = "<group>"; };
 		6F749B7DC6215BF3E267F882 /* Pods-NYTimes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NYTimes.release.xcconfig"; path = "Target Support Files/Pods-NYTimes/Pods-NYTimes.release.xcconfig"; sourceTree = "<group>"; };
 		D8F997D8181FF5B6E639338F /* Pods-NYTimes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NYTimes.debug.xcconfig"; path = "Target Support Files/Pods-NYTimes/Pods-NYTimes.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -93,6 +95,7 @@
 				631DD05D250FA4EA00AE34C7 /* SceneDelegate.swift */,
 				631DD074250FB4A800AE34C7 /* Model */,
 				631DD071250FB46300AE34C7 /* View */,
+				631DD08F2511E6C500AE34C7 /* Extension */,
 				631DD064250FA4EC00AE34C7 /* Assets.xcassets */,
 				631DD061250FA4EA00AE34C7 /* Main.storyboard */,
 				631DD083251002D100AE34C7 /* AlamofireRequestManager.swift */,
@@ -121,6 +124,14 @@
 				631DD08B2510E9E000AE34C7 /* FavoritesModel.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		631DD08F2511E6C500AE34C7 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				631DD08D2511E6BE00AE34C7 /* Spinner.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		D4AD41C17CE7510DB1946882 /* Pods */ = {
@@ -229,6 +240,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				631DD08E2511E6BE00AE34C7 /* Spinner.swift in Sources */,
 				631DD0882510B50400AE34C7 /* DetailViewController.swift in Sources */,
 				631DD080250FC22C00AE34C7 /* ArticlesTableViewCell.swift in Sources */,
 				631DD073250FB4A300AE34C7 /* ModelNews.swift in Sources */,

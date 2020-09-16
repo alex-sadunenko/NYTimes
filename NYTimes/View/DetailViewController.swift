@@ -16,9 +16,14 @@ class DetailViewController: UIViewController, WKNavigationDelegate {
 
     @IBOutlet weak var webView: WKWebView!
     
+    deinit {
+        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        showSpinner()
         if articleURL != nil {
             guard let url = URL(string: articleURL!) else { return }
             webView.navigationDelegate = self
@@ -28,6 +33,17 @@ class DetailViewController: UIViewController, WKNavigationDelegate {
             webView.navigationDelegate = self
             webView.loadHTMLString(urlString, baseURL: nil)
         }
+        
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
     }
     
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "estimatedProgress" {
+            if webView.estimatedProgress == 1.0 {
+                removeSpinner()
+            }
+        }
+    }
 }
+
+

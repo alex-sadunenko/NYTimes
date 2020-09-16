@@ -49,25 +49,24 @@ class ArticlesViewController: UIViewController {
         }
     }
     
-    func update() {
-        tableView.reloadData()
-    }
-    
 }
 
 //MARK: - Fetch Data
 extension ArticlesViewController {
     
     func dataFetch() {
+        showSpinner()
         if endpointArticle != nil {
             alamofireRequest.sendRequest(url: baseURL + endpointArticle! + "api-key=" + keyAPI) { (modelNews) in
                 DispatchQueue.main.async {
                     self.newsArray = modelNews
                     self.tableView.reloadData()
+                    self.removeSpinner()
                 }
             }
         } else {
             items = realm.objects(FavoritesModel.self)
+            removeSpinner()
         }
     }
 }
