@@ -1,22 +1,18 @@
 //
-//  ModelNews.swift
+//  NewsModel.swift
 //  NYTimes
 //
-//  Created by Alex on 14.09.2020.
+//  Created by Alex on 17.09.2020.
 //  Copyright © 2020 Alex Sadunenko. All rights reserved.
 //
 
 import Foundation
 
-struct ModelNews: Decodable {
-    let results: [ResultsNews]?
-    
-    enum CodingKeys: String, CodingKey {
-        case results = "results"
-    }
+struct NewsModel: Decodable {
+    let results: [NewsArray]?
 }
 
-struct ResultsNews: Decodable {
+struct NewsArray: Decodable {
     let url: String?
     let title: String?
     let publishedDate: String?
@@ -24,11 +20,11 @@ struct ResultsNews: Decodable {
     let media: [Media]
     
     enum CodingKeys: String, CodingKey {
-        case url = "url"
-        case title = "title"
+        case url
+        case title
         case publishedDate = "published_date"
-        case byline = "byline"
-        case media = "media"
+        case byline
+        case media
     }
 }
 
@@ -41,10 +37,5 @@ struct Media: Decodable {
 }
 
 struct Image: Decodable {
-    
     let url: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case url = "url"
-    }
 }

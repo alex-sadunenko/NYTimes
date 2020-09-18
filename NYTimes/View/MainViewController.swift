@@ -8,21 +8,17 @@
 
 import UIKit
 
-//MARK: - Constants
-let listOfSections = ["Most emailed", "Most shared", "Most viewed", "Favorites"]
-let urlOfSections = ["emailed/30.json?", "shared/30.json?", "viewed/30.json?", nil]
-
 class MainViewController: UIViewController {
+
+    //MARK: - Constants
+    let listOfSections = ["Most emailed", "Most shared", "Most viewed", "Favorites"]
+    let urlOfSections = ["emailed/30.json?", "shared/30.json?", "viewed/30.json?", nil]
 
     //MARK: - IBOutlet
     @IBOutlet weak var tableView: UITableView! {
         didSet {
             tableView.tableFooterView = UIView(frame: CGRect.zero)
         }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

@@ -11,9 +11,5 @@ import UIKit
 class MainTableViewCell: UITableViewCell {
 
     @IBOutlet weak var sectionLabel: UILabel!
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
 
 }

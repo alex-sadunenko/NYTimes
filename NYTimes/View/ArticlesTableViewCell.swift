@@ -19,7 +19,6 @@ class ArticlesTableViewCell: UITableViewCell {
     
     var articleURL = ""
     let realm = try! Realm()
-    let alamofireRequest = AlamofireRequest()
         
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -45,7 +44,7 @@ class ArticlesTableViewCell: UITableViewCell {
             if let data = articleImage.image?.pngData() {
                 newObjectFavorites.image = data
             }
-            alamofireRequest.sendRequestHTML(url: articleURL) { (stringHTML) in
+            LocalManager.shared.getDataHTML(url: articleURL, responseDataTipe: .html) { (stringHTML) in
                 guard let stringHTML = stringHTML else { return }
                 newObjectFavorites.url = stringHTML
                 
@@ -58,23 +57,11 @@ class ArticlesTableViewCell: UITableViewCell {
         
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-    }
-    
-    func setupWith(titleLabel: String?,
-                   authorLabel: String?,
-                   dateLabel: String?,
-                   articleImage: UIImage?,
-                   articleURL: String?,
-                   isFavorite: String,
-                   image: UIImage?) {
-        self.titleLabel.text = titleLabel
-        self.authorLabel.text = authorLabel
-        self.dateLabel.text = dateLabel
-        self.articleImage.image = articleImage
-        self.articleURL = articleURL!
+    func setupWith(currentNews: CurrentNews, isFavorite: String, image: UIImage?) {
+        self.titleLabel.text = currentNews.title
+        self.authorLabel.text = currentNews.byline
+        self.dateLabel.text = currentNews.publishedDate
+        self.articleURL = currentNews.url
         self.favoritesButton.imageView?.image = UIImage(systemName: isFavorite)
         self.articleImage.image = image
     }

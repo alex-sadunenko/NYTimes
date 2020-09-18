@@ -13,14 +13,9 @@ class ArticlesViewController: UIViewController {
 
     var titleSection: String?
     var endpointArticle: String?
-    var newsArray: ModelNews?
-    let alamofireRequest = AlamofireRequest()
-    let baseURL = "https://api.nytimes.com/svc/mostpopular/v2/"
-    let keyAPI = "xYxWupVlGMj7djARPfqGsQlV0kQpx4hQ"
+    var newsArray: NewsModel?
+    var listOfNews: Results<FavoritesModel>!
     
-    var items: Results<FavoritesModel>!
-    let realm = try! Realm()
-
     //MARK: - IBOutlet
     @IBOutlet weak var tableView: UITableView! {
         didSet {
@@ -41,10 +36,10 @@ class ArticlesViewController: UIViewController {
             let detailVC = segue.destination as! DetailViewController
             guard let numberSection = tableView.indexPathForSelectedRow?.row else { return }
             if endpointArticle == nil {
-                detailVC.articleURLOffline = items[numberSection].url
+                detailVC.articleURLOffline = listOfNews[numberSection].url
             } else {
-                guard let newsArray = newsArray, let results = newsArray.results else { return }
-                detailVC.articleURL = results[numberSection].url
+                guard let newsArray = newsArray, let listOfNews = newsArray.results else { return }
+                detailVC.articleURL = listOfNews[numberSection].url
             }
         }
     }
@@ -57,23 +52,17 @@ extension ArticlesViewController {
     func dataFetch() {
         showSpinner()
         if endpointArticle != nil {
-            alamofireRequest.sendRequest(url: baseURL + endpointArticle! + "api-key=" + keyAPI) { (modelNews) in
+            LocalManager.shared.getDataJSON(url: baseURL + endpointArticle! + "api-key=" + keyAPI, responseDataTipe: .json) { (newsModel) in
                 DispatchQueue.main.async {
-                    self.newsArray = modelNews
+                    self.newsArray = newsModel
                     self.tableView.reloadData()
                     self.removeSpinner()
                 }
             }
         } else {
-            items = realm.objects(FavoritesModel.self)
+            listOfNews = realm.objects(FavoritesModel.self)
             removeSpinner()
         }
-    }
-}
-
-//MARK: - Table View Delegate
-extension ArticlesViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     }
 }
 
@@ -81,11 +70,11 @@ extension ArticlesViewController: UITableViewDelegate {
 extension ArticlesViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if endpointArticle == nil, let items = items {
-            return items.count
+        if endpointArticle == nil, let listOfNews = listOfNews {
+            return listOfNews.count
         }
-        guard let newsArray = newsArray, let results = newsArray.results else { return 0}
-        return results.count
+        guard let newsArray = newsArray, let listOfNews = newsArray.results else { return 0}
+        return listOfNews.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -93,32 +82,33 @@ extension ArticlesViewController: UITableViewDataSource {
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
         
-        if endpointArticle == nil, let items = items {
-            let predicate = NSPredicate(format: "title == %@", argumentArray: [items[indexPath.row].title as Any])
-            let favorites = realm.objects(FavoritesModel.self).filter(predicate)
-            print(favorites)
-            guard let favorite = favorites.first else { return cell}
+        if endpointArticle == nil, let listOfNews = listOfNews {
+            
+            let predicate = NSPredicate(format: "title == %@", argumentArray: [listOfNews[indexPath.row].title as Any])
+            let listOfFavorites = realm.objects(FavoritesModel.self).filter(predicate)
+            guard let favorite = listOfFavorites.first else { return cell }
             let image = UIImage(data: favorite.image)
 
-            cell.setupWith(titleLabel: favorite.title, authorLabel: favorite.byline, dateLabel: favorite.publishedDate, articleImage: nil, articleURL: favorite.url, isFavorite: favorite.isFavorite, image: image)
+            cell.setupWith(currentNews: CurrentNews(withFavorites: favorite), isFavorite: favorite.isFavorite, image: image)
             
         } else {
-            guard let newsArray = newsArray, let results = newsArray.results else { return cell}
-            let result = results[indexPath.row]
             
-            let predicate = NSPredicate(format: "title == %@", argumentArray: [result.title as Any])
-            let favorites = realm.objects(FavoritesModel.self).filter(predicate)
+            guard let listOfNews = newsArray?.results else { return cell}
+            let currentNews = CurrentNews(withNews: listOfNews[indexPath.row])
+            
+            let predicate = NSPredicate(format: "title == %@", argumentArray: [currentNews.title as Any])
+            let listOfFavorites = realm.objects(FavoritesModel.self).filter(predicate)
             var isFavorite = "star"
-            if let favorite = favorites.first {
+            if let favorite = listOfFavorites.first {
                 isFavorite = favorite.isFavorite
             }
             
-            cell.setupWith(titleLabel: result.title, authorLabel: result.byline, dateLabel: result.publishedDate, articleImage: nil, articleURL: result.url, isFavorite: isFavorite, image: UIImage())
+            cell.setupWith(currentNews: currentNews, isFavorite: isFavorite, image: UIImage())
             
-            guard let media = results[indexPath.row].media.first else { return cell }
+            guard let media = listOfNews[indexPath.row].media.first else { return cell }
             guard let mediaMetadata = media.mediaMetadata.last else { return cell }
             guard let lastUrl = mediaMetadata.url else { return cell }
-            alamofireRequest.sendRequestImage(url: lastUrl, completion: { (articleImage) in
+            LocalManager.shared.getDataImage(url: lastUrl, responseDataTipe: .image, completion: { (articleImage) in
                 if let articleImage = articleImage {
                     cell.articleImage.image = articleImage
                 }
