@@ -13,8 +13,8 @@ class ArticlesViewController: UIViewController {
 
     var titleSection: String?
     var endpointArticle: String?
-    var newsArray: NewsModel?
-    var listOfNews: Results<FavoritesModel>!
+    var news = [News]()
+    var favorites = [News]()
     
     //MARK: - IBOutlet
     @IBOutlet weak var tableView: UITableView! {
@@ -36,10 +36,9 @@ class ArticlesViewController: UIViewController {
             let detailVC = segue.destination as! DetailViewController
             guard let numberSection = tableView.indexPathForSelectedRow?.row else { return }
             if endpointArticle == nil {
-                detailVC.articleURLOffline = listOfNews[numberSection].url
+                detailVC.articleURLOffline = favorites[numberSection].url
             } else {
-                guard let newsArray = newsArray, let listOfNews = newsArray.results else { return }
-                detailVC.articleURL = listOfNews[numberSection].url
+                detailVC.articleURL = news[numberSection].url
             }
         }
     }
@@ -52,15 +51,19 @@ extension ArticlesViewController {
     func dataFetch() {
         showSpinner()
         if endpointArticle != nil {
-            LocalManager.shared.getDataJSON(url: baseURL + endpointArticle! + "api-key=" + keyAPI, responseDataTipe: .json) { (newsModel) in
+            LocalManager.shared.getData(url: baseURL + endpointArticle! + "api-key=" + keyAPI, responseDataType: .json) { (newsModel) in
                 DispatchQueue.main.async {
-                    self.newsArray = newsModel
+                    let newsResponse = NewsResponse.init(withNews: newsModel as! NewsModel)
+                    self.news = newsResponse.news
                     self.tableView.reloadData()
                     self.removeSpinner()
                 }
             }
         } else {
-            listOfNews = realm.objects(FavoritesModel.self)
+            RealmManager.getObjects(completion: { (favorites) in
+                let favoritesResponse = FavoritesResponse.init(withFavorites: favorites)
+                self.favorites = favoritesResponse.favorites
+            })
             removeSpinner()
         }
     }
@@ -70,49 +73,53 @@ extension ArticlesViewController {
 extension ArticlesViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if endpointArticle == nil, let listOfNews = listOfNews {
-            return listOfNews.count
+        if endpointArticle == nil {
+            return favorites.count
+        } else {
+            return news.count
         }
-        guard let newsArray = newsArray, let listOfNews = newsArray.results else { return 0}
-        return listOfNews.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        var currentNews: News
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "articleCell", for: indexPath) as! ArticlesTableViewCell
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
         
-        if endpointArticle == nil, let listOfNews = listOfNews {
+        if endpointArticle == nil {
             
-            let predicate = NSPredicate(format: "title == %@", argumentArray: [listOfNews[indexPath.row].title as Any])
-            let listOfFavorites = realm.objects(FavoritesModel.self).filter(predicate)
-            guard let favorite = listOfFavorites.first else { return cell }
-            let image = UIImage(data: favorite.image)
-
-            cell.setupWith(currentNews: CurrentNews(withFavorites: favorite), isFavorite: favorite.isFavorite, image: image)
+            currentNews = favorites[indexPath.row]
+            cell.currentNews = currentNews
+            cell.setupWith(currentNews: currentNews)
             
         } else {
             
-            guard let listOfNews = newsArray?.results else { return cell}
-            let currentNews = CurrentNews(withNews: listOfNews[indexPath.row])
+            currentNews = news[indexPath.row]
             
             let predicate = NSPredicate(format: "title == %@", argumentArray: [currentNews.title as Any])
-            let listOfFavorites = realm.objects(FavoritesModel.self).filter(predicate)
-            var isFavorite = "star"
-            if let favorite = listOfFavorites.first {
-                isFavorite = favorite.isFavorite
-            }
-            
-            cell.setupWith(currentNews: currentNews, isFavorite: isFavorite, image: UIImage())
-            
-            guard let media = listOfNews[indexPath.row].media.first else { return cell }
-            guard let mediaMetadata = media.mediaMetadata.last else { return cell }
-            guard let lastUrl = mediaMetadata.url else { return cell }
-            LocalManager.shared.getDataImage(url: lastUrl, responseDataTipe: .image, completion: { (articleImage) in
-                if let articleImage = articleImage {
-                    cell.articleImage.image = articleImage
+            RealmManager.getObjects { (favoritesModel) in
+                let listOfFavorites = favoritesModel.filter(predicate)
+                var isFavorite = false
+                if let favorite = listOfFavorites.first {
+                    isFavorite = favorite.isFavorite
                 }
-            })
+                currentNews.isFavorite = isFavorite
+            }
+
+            
+            if let imageUrl = currentNews.imageUrl {
+                DispatchQueue.main.async {
+                LocalManager.shared.getData(url: imageUrl, responseDataType: .image, completion: { (image) in
+                    currentNews.image = image as? Data
+                })
+                }
+            }
+            cell.currentNews = currentNews
+
+            cell.setupWith(currentNews: currentNews)
+            
         }
 
         return cell

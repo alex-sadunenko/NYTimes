@@ -14,6 +14,7 @@ class FavoritesModel: Object {
     @objc dynamic var title = ""
     @objc dynamic var publishedDate = ""
     @objc dynamic var byline = ""
-    @objc dynamic var isFavorite = ""
+    @objc dynamic var isFavorite = false
     @objc dynamic var image = Data()
+    @objc dynamic var imageUrl = ""
 }

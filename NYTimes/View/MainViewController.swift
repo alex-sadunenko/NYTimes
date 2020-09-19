@@ -21,13 +21,15 @@ class MainViewController: UIViewController {
         }
     }
     
+    //MARK: - Prepare Segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard segue.identifier == "ShowArticlesVC" else { return }
-        guard let articlesVC = segue.destination as? ArticlesViewController else { return }
-        guard let numberSection = tableView.indexPathForSelectedRow?.row else { return }
-
-        articlesVC.endpointArticle = urlOfSections[numberSection]
-        articlesVC.titleSection = listOfSections[numberSection]
+        if segue.identifier == "ShowArticlesVC" {
+            let articlesVC = segue.destination as! ArticlesViewController
+            guard let numberSection = tableView.indexPathForSelectedRow?.row else { return }
+            
+            articlesVC.endpointArticle = urlOfSections[numberSection]
+            articlesVC.titleSection = listOfSections[numberSection]
+        }
     }
 
 }
@@ -38,6 +40,7 @@ extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
 }
 
 //MARK: - Table View Data Source

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import RealmSwift
 
 class ArticlesTableViewCell: UITableViewCell {
         
@@ -17,53 +16,30 @@ class ArticlesTableViewCell: UITableViewCell {
     @IBOutlet weak var articleImage: UIImageView!
     @IBOutlet weak var favoritesButton: UIButton!
     
-    var articleURL = ""
-    let realm = try! Realm()
+    var currentNews: News!
         
     override func awakeFromNib() {
         super.awakeFromNib()
+        
     }
 
     @IBAction func favoritesTapped(_ sender: UIButton) {
-        
-        let predicate = NSPredicate(format: "title == %@", argumentArray: [titleLabel.text as Any])
-        let favorites = realm.objects(FavoritesModel.self).filter(predicate)
-        if let favorite = favorites.first {
-            
-            try! self.realm.write {
-                self.realm.delete(favorite)
-            }
-            
+        if currentNews.isFavorite {
+            RealmManager.deleteObject(filterString: currentNews.title)
+            sender.imageView?.image = UIImage(systemName: "star")
         } else {
-            
-            let newObjectFavorites = FavoritesModel()
-            newObjectFavorites.title = titleLabel.text!
-            newObjectFavorites.byline = authorLabel.text!
-            newObjectFavorites.publishedDate = dateLabel.text!
-            newObjectFavorites.isFavorite = "star.fill"
-            if let data = articleImage.image?.pngData() {
-                newObjectFavorites.image = data
-            }
-            LocalManager.shared.getDataHTML(url: articleURL, responseDataTipe: .html) { (stringHTML) in
-                guard let stringHTML = stringHTML else { return }
-                newObjectFavorites.url = stringHTML
-                
-                try! self.realm.write {
-                    self.realm.add(newObjectFavorites)
-                    sender.imageView?.image = UIImage(systemName: "star.fill")
-                }
-            }
+            RealmManager.addFavorites(favorite: currentNews)
+            sender.imageView?.image = UIImage(systemName: "star.fill")
         }
-        
     }
     
-    func setupWith(currentNews: CurrentNews, isFavorite: String, image: UIImage?) {
+    func setupWith(currentNews: News) {
         self.titleLabel.text = currentNews.title
         self.authorLabel.text = currentNews.byline
         self.dateLabel.text = currentNews.publishedDate
-        self.articleURL = currentNews.url
-        self.favoritesButton.imageView?.image = UIImage(systemName: isFavorite)
-        self.articleImage.image = image
+        self.favoritesButton.imageView?.image = UIImage(systemName: currentNews.isFavorite ? "star.fill" : "star")
+        self.articleImage.image = UIImage(data: currentNews.image!)
+        self.currentNews = currentNews
     }
 
 }

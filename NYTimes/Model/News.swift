@@ -1,28 +1,31 @@
 //
-//  CurrentNews.swift
+//  News.swift
 //  NYTimes
 //
-//  Created by Alex on 17.09.2020.
+//  Created by Alex on 19.09.2020.
 //  Copyright © 2020 Alex Sadunenko. All rights reserved.
 //
 
 import Foundation
 
-struct CurrentNews {
+struct News {
+    
     let url: String
     let title: String
     let publishedDate: String
     let byline: String
-    let isFavorite: String
-    let image: String
-    
+    var isFavorite: Bool
+    let imageUrl: String?
+    var image: Data?
+
     init(withNews: NewsArray) {
         url = withNews.url!
         title = withNews.title!
         publishedDate = withNews.publishedDate!
         byline = withNews.byline!
-        isFavorite = ""
-        image = ""
+        isFavorite = false
+        imageUrl = withNews.media.first?.mediaMetadata.last?.url
+        image = Data()
     }
     
     init(withFavorites: FavoritesModel) {
@@ -30,8 +33,9 @@ struct CurrentNews {
         title = withFavorites.title
         publishedDate = withFavorites.publishedDate
         byline = withFavorites.byline
-        isFavorite = ""
-        image = ""
-
+        isFavorite = true
+        image = withFavorites.image
+        imageUrl = withFavorites.imageUrl
     }
+    
 }
