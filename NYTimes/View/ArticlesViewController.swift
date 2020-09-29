@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import RealmSwift
 
 class ArticlesViewController: UIViewController {
 
@@ -107,19 +106,16 @@ extension ArticlesViewController: UITableViewDataSource {
                 }
                 currentNews.isFavorite = isFavorite
             }
-
             
             if let imageUrl = currentNews.imageUrl {
                 DispatchQueue.main.async {
-                LocalManager.shared.getData(url: imageUrl, responseDataType: .image, completion: { (image) in
-                    currentNews.image = image as? Data
-                })
+                    LocalManager.shared.getData(url: imageUrl, responseDataType: .image, completion: { (image) in
+                        currentNews.image = image as? Data
+                        cell.currentNews = currentNews
+                        cell.setupWith(currentNews: currentNews)
+                    })
                 }
             }
-            cell.currentNews = currentNews
-
-            cell.setupWith(currentNews: currentNews)
-            
         }
 
         return cell
